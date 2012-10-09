@@ -1,2 +1,2 @@
-sl4a_pydroid_mock_api
-pycrypto
+pycrypto==2.6
+sl4a-pydroid-mock-api==0.4.1
