@@ -10,6 +10,13 @@ To use it:
     template
   Run the program as an Android project via the template
 
+To run it on your Linux or OSX computer:
+  $ git clone https://github.com/brousch/fabdroid.git
+  $ cd fabdroid
+  $ make install
+  $ source venv/bin/activate
+  $ python fabdroid/hello.py
+
 The program currently fails on line 32 of fabric/network.py. This line is 
 trying to import ssh. I'm not sure why it's failing yet.
 
