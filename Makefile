@@ -11,9 +11,9 @@ FABRIC_VERSION := Fabric-1.4.3
 FABRIC_GZ := $(FABRIC_VERSION).tar.gz
 FABRIC_URL := http://pypi.python.org/packages/source/F/Fabric/$(FABRIC_GZ)
 
-PARAMIKO_VERSION := paramiko-1.8.0
-PARAMIKO_GZ := $(PARAMIKO_VERSION).tar.gz
-PARAMIKO_URL := http://pypi.python.org/packages/source/p/paramiko/$(PARAMIKO_GZ)
+SSH_VERSION := ssh-1.7.14
+SSH_GZ := $(SSH_VERSION).tar.gz
+SSH_URL := http://pypi.python.org/packages/source/s/ssh/$(SSH_GZ)
 
 .PHONY: install
 install: create_venv get_reqs get_deps
@@ -35,23 +35,34 @@ clear_cache:
 	rm -rf $(CACHE_DIR)
 
 .PHONY: get_deps
-get_deps: get_fabric get_paramiko
+get_deps: clean_deps get_dep_fabric get_dep_ssh
 
-.PHONY: get_fabric
-get_fabric: make_cachedir
+.PHONY: clean_deps
+clean_deps: clean_dep_fabric clean_dep_ssh
+
+.PHONY: get_dep_fabric
+get_dep_fabric: make_cachedir
 	wget -O $(CACHE_DIR)/$(FABRIC_GZ) $(FABRIC_URL)
 	tar -xzf $(CACHE_DIR)/$(FABRIC_GZ) -C $(CACHE_DIR)
 	cp -R $(CACHE_DIR)/$(FABRIC_VERSION)/fabric $(PROJECT_DIR)/
 
-.PHONY: get_paramiko
-get_paramiko: make_cachedir
-	wget -O $(CACHE_DIR)/$(PARAMIKO_GZ) $(PARAMIKO_URL)
-	tar -xzf $(CACHE_DIR)/$(PARAMIKO_GZ) -C $(CACHE_DIR)
-	cp -R $(CACHE_DIR)/$(PARAMIKO_VERSION)/paramiko $(PROJECT_DIR)/
+.PHONY: clean_dep_fabric
+clean_dep_fabric:
+	rm -rf $(PROJECT_DIR)/fabric
+
+.PHONY: get_dep_ssh
+get_dep_ssh: make_cachedir
+	wget -O $(CACHE_DIR)/$(SSH_GZ) $(SSH_URL)
+	tar -xzf $(CACHE_DIR)/$(SSH_GZ) -C $(CACHE_DIR)
+	cp -R $(CACHE_DIR)/$(SSH_VERSION)/ssh $(PROJECT_DIR)/
+
+.PHONY: clean_dep_ssh
+clean_dep_ssh:
+	rm -rf $(PROJECT_DIR)/ssh
 
 .PHONY: generate_zip
-generate_zip:
-	cd $(PROJECT_DIR); zip -r $(APK_ZIP) ./fabric ./paramiko ./*.py;
+generate_zip: get_deps
+	cd $(PROJECT_DIR); zip -r $(APK_ZIP) ./fabric ./ssh ./*.py;
 	mv $(PROJECT_DIR)/$(APK_ZIP) $(WD)/$(APK_ZIP)
 
 .PHONY: replace_pyapk_zip
